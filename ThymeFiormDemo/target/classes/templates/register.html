@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<h1>Registration Form</h1>
+		<hr/>
+		<form th:method="post" th:action="@{/register}" th:object="${studentform}">
+			Roll No: <input type="text" th:field="*{rollno}" /> <br/>
+			Name: <input type="text" th:field="*{name}" /> <br/>
+			Gender:<input type="radio" th:field="*{gender}" th:value="Male" checked /> Male 
+			<input type="radio" th:field="*{gender}" th:value="Female" /> Female <br/>
+			Course:
+			<select th:field="*{course}">
+				<option th:value="B.Tech.">B.Tech.</option>
+				<option th:value="M.Tech.">M.Tech.</option>
+				<option th:value="Phd">Phd</option>
+			</select><br/>
+			Date of Birth: <input type="date" th:field="*{dob}" /><br/>
+			<input type="submit" value="Register Me" />
+						
+		</form>
+	</body>
+</html>

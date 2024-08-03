@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<h1>The Given data is </h1>
+		<br/>
+		<div th:object="${student}">
+			Roll Number : <span th:text="*{rollno}"></span><br/>
+			Name : <span th:text="*{name}"></span><br/>
+			Gender : <span th:text="*{gender}"></span><br/>
+			Course : <span th:text="*{course}"></span><br/>
+			Date of Birth : <span th:text="*{dob}"></span><br/>
+						
+		</div>
+	</body>
+</html>
