@@ -1,0 +1,15 @@
+<html xmlns:th="http://www.thymeelaf.org">
+	<body>
+		
+		<div style="border: solid 2px red; width:400px; text-align: center;margin-left: 250px;">
+			<h1>Login Window</h1>
+			<form th:method="post" th:action="@{/logcheck}" th:object="${usrform}">
+				User Name : <input type="text" th:field="*{username}" /><br/><br/>
+				Password : <input type="password" th:field="*{password}" /><br/><br/>
+				<input type="submit" value="Login" />
+			</form>
+			<div style="color: red;" th:text="${message}"></div>
+		</div>
+	</body>
+	
+</html>
