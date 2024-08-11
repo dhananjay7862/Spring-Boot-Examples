@@ -1,0 +1,230 @@
+create database studentdb
+use studentdb
+create table student(rollno numeric(5) primary key,name varchar(40),age numeric(3),address varchar(60))
+insert into student values(101, 'Anuj Kapoor',23, 'Agra')
+insert into student values(102, 'Pankaj',21, 'Lucknow')
+insert into student values(103, 'Ashish',25, 'Prayagraj')
+select * from student
+___________________________________________________________________________ 
+
+spring.datasource.url=jdbc:mysql://localhost:3306/studentdb?useSSL=false
+spring.datasource.username=root
+#spring.datasource.password=
+server.port=9999
+
+_________________________________________________
+student Entitity
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class student {
+
+	@Id
+	int rollno;
+	String name;
+	int age;
+	String address;
+	public student() {}
+	public student(int rollno, String name, int age, String address) {
+		super();
+		this.rollno = rollno;
+		this.name = name;
+		this.age = age;
+		this.address = address;
+	}
+	public int getRollno() {
+		return rollno;
+	}
+	public void setRollno(int rollno) {
+		this.rollno = rollno;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+}
+
+________________________________________________________________________
+
+StudentRepository
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.Entity.student;
+
+@Repository
+public interface StudentRepository extends CrudRepository<student, Integer> {
+
+}
+
+
+_____________________________________________________________________________
+
+StudentService
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.Entity.student;
+import com.example.demo.Repository.StudentRepository;
+
+@Service
+public class StudentService {
+
+	@Autowired
+	StudentRepository studentrepo;
+	public Iterable<student>  showall()
+	{
+		return studentrepo.findAll();
+	}
+	
+	public student insert(student s)
+	{
+		return studentrepo.save(s);
+	}
+	
+	public void delete(int rollno)
+	{
+		studentrepo.deleteById(rollno);
+	}
+	
+	public student get(int rollno)
+	{
+		return studentrepo.findById(rollno).get();
+	}
+	
+	
+}
+
+_______________________________________________________
+Controller
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.demo.Entity.student;
+import com.example.demo.Service.StudentService;
+
+@Controller
+public class AppController {
+
+	@Autowired
+	StudentService studentservice;
+	@GetMapping("/")
+	public String show(Model model)
+	{
+		model.addAttribute("data", studentservice.showall());
+		return "show";
+	}
+	
+	@GetMapping("/insert")
+	public String insert(Model model)
+	{
+		model.addAttribute("student",new student());
+		return "insert";
+	}
+	
+	@PostMapping("/save")
+	public String save(@ModelAttribute student stud)
+	{
+		studentservice.insert(stud);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/delete/{rollno}")
+	public String delete(@PathVariable int rollno)
+	{
+		studentservice.delete(rollno);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/update/{rollno}")
+	
+	public ModelAndView update(@PathVariable int rollno)
+	{
+		ModelAndView mv=new ModelAndView("insert");
+		student std=studentservice.get(rollno);
+		mv.addObject("student", std);
+		return mv;
+		
+		
+	}
+}
+
+__________________________________________________________
+
+show.html
+
+<html xmlns:th="www.thymeleaf.org">
+	<body>
+		<h1>Student Records</h1>
+		<table width="500px" border="2">
+			<tr>
+				<td>Roll Number</td>
+				<td>Name</td>
+				<td>Age</td>
+				<td>Address</td>
+				<td>Delete</td>
+				<td>Update</td>
+			</tr>
+			<tr th:each=" s: ${data}">
+				<td th:text="${s.rollno}"></td>
+				<td th:text="${s.name}"></td>
+				<td th:text="${s.age}"></td>
+				<td th:text="${s.address}"></td>
+				<td><a th:href="@{'/delete/'+${s.rollno}}">Delete</a></td>		
+				<td><a th:href="@{'/update/'+${s.rollno}}">Update</a></td>			
+			</tr>
+		</table>
+		<a th:href="@{/insert}">Insert Record</a>
+	</body>
+</html>
+_____________________________________________________________
+
+insert.html
+
+<html xmlns:th="www.thymeleaf.org">
+	<body>
+
+	<br/>
+	<div style="text-align: center; border: solid 2px red;width:500px; margin-left: 250px;">
+		<form th:method="post" th:action="@{/save}" th:object="${student}">
+				Roll Number <br/>
+				<input type="text" th:field="*{rollno}" /><br/>
+				Name <br/>
+				<input type="text" th:field="*{name}" /><br/>
+				Age <br/>
+				<input type="text" th:field="*{age}" /><br/>
+				Address <br/>
+				<input type="text" th:field="*{address}" /><br/>
+				<input type="submit" value="Insert" />
+								
+		</form>	
+	</div>
+	
+	</body>
+</html>
