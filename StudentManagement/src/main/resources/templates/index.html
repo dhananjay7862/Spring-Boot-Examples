@@ -1,0 +1,20 @@
+<html xmlns:th="http://thymeleaf.org">
+	<body>
+		<h1>Student Registration With Profile Picture</h1>
+		<form method="post" action="/upload" enctype="multipart/form-data">
+			Roll Number <br/>
+			<input type="text" required name="rollno" /><br/>
+			Name <br/>
+			<input type="text" required name="name" /><br/>
+			Course<br/>
+			<input type="text" required name="course" /><br/>
+			Profile Photo<br/>
+			<input type="file" required name="file" /><br/><br/>
+			
+			<input type="submit" value="Register"/>									
+		</form>
+		<p th:text="${message}"></p>
+		<br/>
+		<a th:href="@{/show}">Show All Records</a>
+	</body>
+</html>
