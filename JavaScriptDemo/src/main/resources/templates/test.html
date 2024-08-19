@@ -1,0 +1,15 @@
+<html xmlns:th="thymeleaf.org">
+	<head>
+		<script type="text/javascript">
+			function sayhello()
+			{
+				alert("hello Friends")
+			}
+		</script>
+		<script th:src="@{/js/myjs.js}" type="text/javascript"></script>
+	</head>
+	<body>
+		<input type="button" value="Say Hello" onclick="sayhello()" />
+		<input type="button" value="Say Hi" onclick="sayhi()" />
+	</body>
+</html>
